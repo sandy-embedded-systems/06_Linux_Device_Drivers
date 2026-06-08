@@ -1,0 +1,98 @@
+1. What is the Linux kernel?
+The Linux kernel is the core part of the Linux operating system. It acts as an interface between applications and the hardware.
+Its main responsibilities include:
+	Process management (creating and scheduling processes)
+	Memory management
+	Device driver management
+	File system management
+	Network stack management
+	Hardware access control.
+
+
+2. What is a kernel module?
+A kernel module is a piece of code that can be loaded into or removed from the Linux kernel while the system is running.
+Examples:
+USB drivers
+Network drivers
+File system drivers
+Character device drivers
+
+Advantages:
+	No need to rebuild the entire kernel.
+	Saves memory because unused modules can remain unloaded.
+	Easier driver development and testing.
+
+
+3. Why should beginners use a VM for kernel experiments?
+A Virtual Machine (VM) provides a safe environment for learning kernel development.
+Reasons:
+	Kernel bugs can crash the system
+	A faulty module may cause a kernel panic.
+	Easy recovery
+	Revert to a previous snapshot.
+	No risk to your main OS
+	Your host machine remains unaffected.
+	Experiment freely
+	Load/unload modules.
+	Test drivers.
+	Reboot without fear of damaging your working environment.
+Popular VMs:
+	VirtualBox
+	VMware Workstation
+	QEMU/KVM
+
+
+4. What is the purpose of the /proc folder?
+Open the folder /dev and try to guess:
+/proc is a virtual filesystem created by the kernel.
+It does not contain real files stored on disk. Instead, it provides information about:
+	Running processes
+	Memory usage
+	CPU information
+	Kernel settings
+	System status
+Examples:
+$ cat /proc/cpuinfo
+   Shows CPU details.
+
+
+5. Which files are related to your hard drive?
+The /dev directory contains device files that represent hardware and virtual devices.
+
+List them:
+
+ls /dev
+Which files are related to hard drives?
+Common storage device files:
+/dev/sda
+/dev/sda1
+/dev/sda2
+or on NVMe SSDs:
+/dev/nvme0n1
+/dev/nvme0n1p1
+Examples:
+	sda → first SATA/SCSI disk
+	sda1 → first partition
+	nvme0n1 → NVMe SSD
+
+6. Which might belong to your keyboard or mouse?
+Linux input devices are usually under:
+	/dev/input/
+Check:
+	ls /dev/input
+
+You may see:
+event0
+event1
+event2
+mice
+mouse0
+
+Examples:
+/dev/input/eventX → keyboard, mouse, touchpad, etc.
+/dev/input/mice → combined mouse interface
+/dev/input/mouse0 → a mouse device
+To see which device corresponds to what:
+cat /proc/bus/input/devices
+or
+$ sudo evtest
