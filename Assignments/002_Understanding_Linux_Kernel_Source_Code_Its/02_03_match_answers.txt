@@ -1,0 +1,121 @@
+1. fs/				A. Startup and boot code
+2. mm/				B. Filesystem support
+3. drivers/net/			C. Network interface drivers
+4. arch/x86/			D. x86-specific architecture code
+5. init/			E. Memory allocation and paging
+
+
+Answers :
+1-B
+2-E
+3-C
+4-D
+5-A
+
+
+
+1. What is the purpose of a Makefile in the kernel?
+A Makefile tells the build system:
+Which source files should be compiled.
+Which object files should be linked together.
+Whether code should be built into the kernel image or as a loadable module.
+example : obj-y += driver.o
+Means:
+	Compile driver.c
+	Generate driver.o
+	Link it into the kernel image
+
+
+2. What does Kconfig do?
+Kconfig is the kernel configuration system.
+It defines:
+	What features exist.
+	Whether they are enabled or disabled.
+	Dependency relationships.
+	Configuration menus shown by menuconfig.
+
+
+
+3. Why is the kernel source divided into many folders?
+
+The Linux kernel contains millions of lines of code.
+Without organization it would be impossible to maintain.
+Main Directories
+arch/      Architecture-specific code
+drivers/   Device drivers
+fs/        File systems
+net/       Networking stack
+kernel/    Core kernel code
+mm/        Memory management
+ipc/       Inter-process communication
+security/  Security framework
+include/   Header files
+
+Benefits
+	Easier maintenance
+	Parallel development
+	Faster compilation	
+	Better modularity
+	Easier code navigation
+
+
+4. Can we remove features from the kernel before building? How?
+
+Yes ,One of Linux's strengths is that unnecessary features can be excluded.
+Method 1: menuconfig
+ $ make menuconfig
+Disable unwanted options:
+Networking support
+Sound support
+Bluetooth
+USB
+File systems
+Drivers
+
+Set them to:
+[N]
+
+Method 2: xconfig
+ $ make xconfig
+GUI version.
+
+Method 3: Directly edit .config
+
+Example:
+CONFIG_BT=n
+CONFIG_SOUND=n
+
+Then:
+ $ make oldconfig
+Result
+Smaller kernel image
+Less memory usage
+Faster boot
+Reduced attack surface
+
+This is common in embedded Linux systems.
+
+5. Why should we avoid modifying the top-level kernel Makefile directly?
+
+The top-level Makefile is the main build controller of the entire kernel.
+Problems
+1. Upgrades become difficult
+	When updating kernel versions:
+	Your modifications may be overwritten.
+2. Can break the entire build
+	A mistake in the top-level Makefile can stop the kernel from compiling.
+
+3. Not scalable
+	Suppose you add a driver.
+
+Bad approach:
+
+# Top-level Makefile
+obj-y += mydriver/
+
+Every new driver requires editing the main Makefile.
+
+4. Violates kernel design
+	Drivers should integrate through their subsystem Makefile and Kconfig.
+
+	
