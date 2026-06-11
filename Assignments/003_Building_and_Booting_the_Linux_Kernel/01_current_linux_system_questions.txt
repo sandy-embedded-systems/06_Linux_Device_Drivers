@@ -1,0 +1,36 @@
+1. What is your current kernel version?
+(Use uname -r)
+	6.17.0-35-generic
+
+
+2. What files are present in /boot/ that relate to the kernel?
+config-6.17.0-29-generic  
+grub
+initrd.img-6.17.0-35-generic  
+memtest86+ia32.efi  
+System.map-6.17.0-29-generic  
+vmlinuz-6.17.0-29-generic
+config-6.17.0-35-generic  
+initrd.img                    
+initrd.img.old                
+memtest86+x64.bin   
+System.map-6.17.0-35-generic  
+vmlinuz-6.17.0-35-generic
+efi                     
+initrd.img-6.17.0-29-generic  
+memtest86+ia32.bin            
+memtest86+x64.efi   
+vmlinuz                       
+vmlinuz.old
+
+
+3. What folder(s) exist in /usr/src/? Can you see linux-source or linux-headers?
+linux-headers-6.14.0-27-generic  
+linux-headers-6.17.0-35-generic   
+linux-hwe-6.17-headers-6.17.0-29
+linux-headers-6.17.0-29-generic  
+linux-hwe-6.14-headers-6.14.0-27  
+linux-hwe-6.17-headers-6.17.0-35
+
+Here we can observe that the linux source along with the versions. 
+

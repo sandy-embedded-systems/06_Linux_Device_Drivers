@@ -1,0 +1,13 @@
+3. Match the following steps to their command:
+	Action			Command
+A. Compile all sources	a. make install
+B. Install modules	b. make
+C. Update boot files	c. make modules_install
+D. Show config menu	d. make menuconfig
+
+Answers :
+
+A-b
+B-c
+C-a
+D-d

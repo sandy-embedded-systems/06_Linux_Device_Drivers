@@ -1,0 +1,19 @@
+1. What is the role of GRUB during boot?
+
+GRUB (GRand Unified Bootloader) is the bootloader that runs after the BIOS/UEFI firmware. It presents a boot menu, loads the selected Linux kernel into memory, and passes boot parameters to it. GRUB can also load the initramfs image. After loading the kernel, it transfers control to the kernel.
+
+2. What is vmlinuz?
+
+vmlinuz is the compressed Linux kernel executable stored in the /boot directory. The name comes from "Virtual Memory Linux" and the "z" indicates it is compressed. During boot, the bootloader loads vmlinuz into memory. The kernel then decompresses itself and starts initialization.
+
+3. Why is initramfs used?
+
+initramfs (Initial RAM Filesystem) is a temporary root filesystem loaded into RAM during boot. It contains essential drivers and tools needed before the real root filesystem can be mounted. This is especially useful when storage or filesystem drivers are built as modules. Once the actual root filesystem is mounted, initramfs hands over control and is discarded.
+
+4. Why should you keep old kernels installed?
+
+Keeping older kernels provides a fallback option if a newly installed kernel fails to boot or has bugs. It allows the system to remain usable while troubleshooting kernel issues. Old kernels can be selected from the GRUB menu during boot. This reduces the risk of being locked out of the system after a kernel upgrade.
+
+5. What does make menuconfig do?
+
+make menuconfig launches a text-based configuration interface for the Linux kernel. It allows users to enable, disable, or customize kernel features, drivers, and subsystems before building the kernel. The selected options are saved in the .config file. This helps create a kernel tailored to specific hardware and requirements.
