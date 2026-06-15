@@ -1,0 +1,18 @@
+1.What is the purpose of using a ring buffer?
+A ring buffer (circular buffer) is used to store data in a fixed-size memory region while efficiently handling continuous reads and writes. When the end of the buffer is reached, the indices wrap around to the beginning. It is commonly used for producer-consumer scenarios such as UART drivers, network drivers, and logging systems.
+
+
+2.How does a mutex protect shared resources?
+A mutex ensures that only one thread or process can access a shared resource at a time. When a thread acquires the mutex, other threads attempting to acquire it must wait until it is released. This prevents race conditions and data corruption when multiple contexts access the same data.
+
+
+3.Why use module_param() instead of hardcoding?
+module_param() allows configuration values to be supplied when the module is loaded, making the module more flexible and reusable. Users can change behavior without modifying source code or recompiling the module. Hardcoded values require code changes and rebuilding whenever a different configuration is needed.
+
+
+4.What happens when the buffer is full?
+When a ring buffer becomes full, no additional data can be stored until some existing data is read or removed. Depending on the implementation, new writes may be rejected, old data may be overwritten, or the writer may be blocked until space becomes available.
+
+
+5.How do read_index and write_index help?
+write_index points to the location where the next data item will be written, while read_index points to the next data item to be read. By advancing these indices and wrapping them around the buffer size, the driver can efficiently track which data is available and which space is free without moving data within the buffer.

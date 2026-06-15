@@ -1,0 +1,18 @@
+1.What is the /proc filesystem?
+The /proc filesystem is a virtual filesystem created by the Linux kernel. It does not store data on disk; instead, it provides information about the kernel, processes, memory, CPU, and other system resources through files and directories.
+
+
+2.What is the purpose of seq_printf()?
+seq_printf() is used to write formatted output into a seq_file buffer. It is commonly used when implementing /proc file entries because it simplifies generating output and handles large amounts of data efficiently.
+
+
+3.Why do we need proc_create()?
+proc_create() is used to create an entry in the /proc filesystem. It registers a file name and associates it with file operations so that user-space applications can read from or write to the proc entry.
+
+
+4.What happens if you forget remove_proc_entry()?
+If a proc entry is not removed when the module is unloaded, stale entries may remain in /proc. This can lead to resource leaks and may cause the kernel to access invalid memory if the entry is later used.
+
+
+5.How does cat /proc/myinfo fetch data from the kernel?
+When cat /proc/myinfo is executed, the kernel invokes the read callback associated with that proc entry. The callback generates the required information, often using seq_printf(), and the kernel returns this data to the cat command, which displays it on the terminal.

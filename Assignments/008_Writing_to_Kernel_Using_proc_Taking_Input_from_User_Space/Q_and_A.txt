@@ -1,0 +1,23 @@
+1.What does proc_write() do?
+proc_write() is the callback function invoked when a user-space program writes data to a file in the /proc filesystem. It receives the data sent by the user, processes it, and can update kernel variables or perform other actions based on the input.
+
+
+2.Why do we use copy_from_user()?
+User-space memory and kernel-space memory are separate for security and stability reasons. copy_from_user() safely copies data from a user-space buffer into a kernel-space buffer. Directly dereferencing a user-space pointer in kernel code can cause faults or security issues.
+
+
+3.What is 0666 permission for?
+0666 is a file permission mode that gives read and write access to everyone:
+Owner: read and write (rw-)
+Group: read and write (rw-)
+Others: read and write (rw-)
+For a proc entry or module parameter, this means any user can read and modify its value.
+
+
+4.What happens if you don’t null-terminate the string?
+Many kernel string functions expect strings to end with a null character ('\0'). If a string is not null-terminated, functions such as printk("%s", str) may continue reading beyond the buffer boundary, resulting in garbage output, memory corruption, crashes, or security vulnerabilities.
+
+
+5.What’s the difference between proc_read and seq_file?
+proc_read is a file operation callback responsible for handling reads from a proc file. The developer must manage buffering, offsets, and partial reads manually.
+seq_file is a kernel interface designed to simplify proc file output. It automatically handles buffering, file offsets, and large outputs, allowing the developer to generate output using functions such as seq_printf() without worrying about read management details.

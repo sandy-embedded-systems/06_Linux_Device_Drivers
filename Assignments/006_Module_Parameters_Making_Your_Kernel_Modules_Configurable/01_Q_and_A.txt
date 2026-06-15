@@ -1,0 +1,16 @@
+1. What is the purpose of module_param() in a kernel module?
+module_param() is used to create module parameters that can be supplied when the module is loaded. It allows users to configure the module's behavior without modifying or recompiling the source code. The parameter value is automatically linked to a kernel variable.
+
+2. What does the third argument (like 0660) control?
+The third argument specifies the permissions of the parameter file created in sysfs. These permissions determine whether the parameter can be read and/or modified by users at runtime. A value of 0660 gives read and write access to the owner and group, while others have no access.
+
+3. What’s the difference between int and charp as types?
+An int parameter stores an integer value such as 10, 100, or -5. A charp parameter stores a pointer to a character string, allowing text values such as "hello" or "uart0" to be passed to the module.
+
+4. What folder shows live values of module parameters?
+Live module parameter values can be viewed in:
+/sys/module/<module_name>/parameters/
+Each parameter appears as a file in this directory, and reading the file shows its current value.
+
+5. Can you change the value of a parameter at runtime?
+Yes, parameters can be changed at runtime if their sysfs permissions allow writing. You can modify them by writing a new value to the corresponding file in /sys/module/<module_name>/parameters/. Parameters with read-only permissions cannot be changed after the module is loaded.

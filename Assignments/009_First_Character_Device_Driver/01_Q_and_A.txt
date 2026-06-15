@@ -1,0 +1,18 @@
+1.What is a major number? What is a minor number?
+A major number identifies the device driver associated with a device file. When a process accesses a device file, the kernel uses the major number to determine which driver should handle the request. A minor number identifies a specific device managed by that driver, allowing one driver to control multiple similar devices.
+
+
+2.What does register_chrdev() do?
+register_chrdev() registers a character device driver with the kernel and associates it with a major number and a set of file operations. Once registered, the kernel can route system calls such as open(), read(), write(), and ioctl() from device files to the driver's callback functions.
+
+
+3.What would happen if you don’t call unregister_chrdev() on exit?
+If a module is unloaded without calling unregister_chrdev(), the character device registration remains in the kernel. This can leave stale entries, prevent the major number from being reused, and may cause failures or unexpected behavior when the driver is loaded again.
+
+
+4.Why do we use copy_from_user() in write()?
+The write() callback receives data from a user-space buffer. Since the kernel cannot safely access user-space memory directly, copy_from_user() is used to securely copy the data into a kernel-space buffer before processing it.
+
+
+5.Why is device_buffer[] important?
+device_buffer[] is a kernel-space buffer used to store data associated with the device. Data written by user applications is typically copied into this buffer, and data returned during reads is often taken from it. It provides a safe place for the driver to maintain device data independently of user-space memory.

@@ -1,0 +1,35 @@
+1. What does uname -r show before your new kernel?
+
+Before booting into the newly compiled kernel, uname -r shows the version of the currently running kernel that came with your distribution.
+$uname -r
+The exact version depends on your system.
+
+2. What does it show after?
+After successfully booting into the newly compiled kernel, uname -r should display the version of the kernel you built and installed.
+if you configured a custom local version string.
+
+
+3. Did anything stop working (WiFi, sound, etc.)?
+
+After booting the new kernel, verify that major hardware and services are functioning correctly:
+WiFi: Check network connectivity.
+ip a
+ping google.com
+Sound: Play an audio file or use:
+aplay /usr/share/sounds/alsa/Front_Center.wav
+Bluetooth: Verify adapters are detected.
+bluetoothctl list
+USB Devices: Confirm USB devices are recognized.
+lsusb
+Graphics/Display: Ensure the desktop loads properly and screen resolution is correct.
+Loaded Modules: Check whether required modules are loaded.
+lsmod
+Record any issues you observe, such as:
+WiFi adapter not detected.
+No sound output.
+Bluetooth unavailable.
+USB devices not recognized.
+Graphics driver problems or low resolution.
+Boot warnings or errors in dmesg.
+
+If everything works normally, note that the new kernel booted successfully and all major peripherals are functioning as expected.

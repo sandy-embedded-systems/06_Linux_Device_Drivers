@@ -1,0 +1,45 @@
+1. How many kernels are listed under menuentry?
+
+Open the GRUB configuration file:
+	$ sudo less /boot/grub/grub.cfg
+Search for menu entries:
+/menuentry
+Each line beginning with menuentry represents a boot option. Count the entries corresponding to Linux kernels. For example:
+
+menuentry 'Ubuntu, with Linux 6.8.0-60-generic'
+menuentry 'Ubuntu, with Linux 6.8.12'
+
+The number on your system depends on how many kernels are installed.
+
+
+2. Which is the default?
+Check the GRUB default setting:
+	$ grep "^GRUB_DEFAULT" /etc/default/grub
+
+Common values are:
+GRUB_DEFAULT=0
+This means the first menuentry in the GRUB menu is booted by default.
+You can also inspect:
+grep "^set default" /boot/grub/grub.cfg
+to see what GRUB ultimately uses as the default entry.
+
+
+3. How can you manually choose which one to boot?
+Reboot the system.
+When the GRUB menu appears, use the arrow keys to select the desired kernel.
+If the menu is hidden, hold Shift (BIOS systems) or press Esc repeatedly (UEFI systems) during boot to display it.
+Select the kernel you want and press Enter.
+If the kernel is listed under Advanced options for Ubuntu/Debian, select that submenu first, then choose the specific kernel version you want to boot.
+
+
+
+
+4. Fill in the blanks::
+
+	File		What it does
+vmlinuz-*		The compressed Linux kernel image that is loaded by the bootloader and executed during system startup.
+System.map-*		A symbol table containing kernel function and variable addresses. It is used for debugging, kernel crash analysis, and interpreting kernel logs.
+.config			The kernel configuration file generated during kernel configuration. It stores all selected build options and determines which features and drivers are included 			in the kernel.
+/lib/modules/*		Directory containing kernel modules (.ko files) for a specific kernel version. These modules can be loaded dynamically when needed.
+initramfs		The Initial RAM Filesystem loaded into memory during boot. It contains essential drivers and tools needed to mount the real root filesystem before the kernel sw			itches to it.
+

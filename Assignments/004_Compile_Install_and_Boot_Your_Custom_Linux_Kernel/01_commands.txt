@@ -1,0 +1,27 @@
+1. make menuconfig
+
+Launches the kernel configuration menu interface (based on ncurses). It allows you to enable, disable, or configure kernel features, drivers, filesystems, networking options, and other components before building the kernel. The selected options are stored in the .config file.
+
+2. make -j$(nproc)
+
+Builds the Linux kernel using parallel compilation. The -j option specifies the number of jobs that can run simultaneously, and $(nproc) automatically provides the number of available CPU cores. This significantly reduces kernel compilation time.
+
+3. make modules_install
+
+Installs all compiled kernel modules into /lib/modules/<kernel-version>/. It also creates module dependency information so that the kernel can load modules correctly when needed.
+
+4. make install
+
+Installs the newly built kernel and related files (such as vmlinuz, System.map, and configuration files) into the /boot directory. It may also trigger updates to the bootloader configuration depending on the distribution.
+
+5. update-grub
+
+Regenerates the GRUB bootloader configuration file by scanning the system for installed kernels and operating systems. This ensures that newly installed kernels appear in the GRUB boot menu during boot.
+
+6. uname -r
+
+Displays the version of the currently running Linux kernel. The -r option specifically prints the kernel release string, for example:
+
+$ uname -r
+6.17.0-35-generic
+
