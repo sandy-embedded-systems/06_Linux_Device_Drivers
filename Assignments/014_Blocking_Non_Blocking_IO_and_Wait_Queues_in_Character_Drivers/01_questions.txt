@@ -1,0 +1,53 @@
+1. What’s the difference between blocking and non-blocking I/O?
+
+Blocking I/O
+
+The calling process sleeps until the requested operation can be completed.
+The CPU is released while waiting.
+Example: a read() waits until data becomes available.
+
+Non-blocking I/O
+
+The operation returns immediately if it cannot be completed.
+The process does not sleep.
+Typically returns -EAGAIN or -EWOULDBLOCK when data is not available.
+The application can try again later.
+
+
+2. What happens if wait_event_interruptible() is used without a condition?
+The wait queue mechanism relies on a condition becoming true.
+If no meaningful condition is checked, the task may sleep indefinitely.
+Even if the task is awakened, it may immediately go back to sleep because there is no state change to verify.
+This can lead to missed events, deadlocks, or incorrect synchronization behavior.
+A wait queue should always be associated with a shared condition that indicates when the waiting thread can proceed.
+
+
+3. Why do we need a mutex along with wait queues?
+Wait queues provide a mechanism for sleeping and waking tasks.
+They do not protect shared data from concurrent access.
+A mutex protects shared resources from race conditions while they are being read or modified.
+Typically:
+The mutex protects the shared state.
+The wait queue allows threads to sleep until that state changes.
+Both are often required for correct synchronization.
+
+
+4. What happens if multiple readers are waiting?
+Multiple processes or threads may be sleeping on the same wait queue.
+When the wait queue is awakened:
+wake_up() may wake multiple waiting tasks.
+Each awakened task competes to access the shared resource.
+The first task that consumes the available data may leave nothing for the others.
+Therefore, each awakened reader must recheck the condition before proceeding.
+Proper synchronization is necessary to avoid races between awakened readers.
+
+
+5. How does user space set O_NONBLOCK?
+The application specifies the O_NONBLOCK flag when opening the device.
+
+Example:
+
+open("/dev/mydev", O_RDONLY | O_NONBLOCK);
+Alternatively, it can be enabled later using the fcntl() system call.
+The kernel stores this flag in the file descriptor's status flags.
+The driver can check whether non-blocking mode is requested and return immediately instead of sleeping.
