@@ -1,0 +1,46 @@
+1. WWhy is alloc_chrdev_region() better than register_chrdev()?
+Ans :
+It is the modern character device registration mechanism.
+It dynamically allocates an available major number, avoiding conflicts with existing drivers.
+It integrates naturally with the cdev infrastructure used by modern Linux character drivers.
+It supports managing multiple device instances (multiple minor numbers) more cleanly.
+It provides better scalability and flexibility than the older register_chrdev() interface.
+
+
+2. What does class_create() actually do?
+Ans:
+It creates a device class in the Linux device model.
+The class appears under /sys/class/.
+It groups similar devices together and provides a framework for exposing device information to user space.
+It enables the automatic creation of device nodes when combined with device_create() and a running udev daemon.
+By itself, it does not create a device file in /dev.
+
+
+3. What role does udev play in device node creation?
+Ans:
+udev is a user-space device manager.
+It monitors kernel device events (uevents).
+When a driver creates a device through the device model, the kernel generates an event.
+udev receives this event and creates the corresponding device node in /dev.
+It can also apply permissions, ownership, naming rules, and symbolic links based on configured policies.
+Without udev, device nodes usually must be created manually (e.g., using mknod).
+
+
+4. What is cleaned by device_destroy()?
+Ans:
+It removes the device object created by device_create() from the Linux device model.
+It removes the corresponding entry from sysfs.
+It triggers the removal of the associated /dev device node through udev.
+It releases resources associated with that device object.
+It does not unregister the device number or remove the cdev; those must be cleaned separately.
+
+
+5. What happens if device_create() fails?
+Ans:
+No device object is created in the device model.
+No sysfs entry is created.
+No device node appears in /dev.
+The function returns an error-encoded pointer (ERR_PTR()).
+The driver should detect the failure, perform cleanup of previously allocated resources, and abort initialization if necessary.
+Ignoring the failure can leave the driver partially initialized and lead to resource leaks or inaccessible devices.
+
