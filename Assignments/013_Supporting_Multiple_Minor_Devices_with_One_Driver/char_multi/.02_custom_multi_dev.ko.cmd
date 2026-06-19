@@ -1,0 +1,1 @@
+savedcmd_02_custom_multi_dev.ko := ld -r -m elf_x86_64 -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T /usr/src/linux-headers-6.17.0-35-generic/scripts/module.lds -o 02_custom_multi_dev.ko 02_custom_multi_dev.o 02_custom_multi_dev.mod.o .module-common.o

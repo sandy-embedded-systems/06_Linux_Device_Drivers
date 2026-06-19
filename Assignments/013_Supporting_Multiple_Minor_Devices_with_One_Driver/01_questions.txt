@@ -1,0 +1,37 @@
+1. What’s the difference between major and minor numbers?
+
+The major number identifies the driver associated with a device.
+The minor number identifies a specific device instance managed by that driver.
+Multiple devices can share the same major number while having different minor numbers.
+
+
+2. Why do we use container_of() in open()?
+
+container_of() is used to obtain a pointer to the driver's device structure from an embedded kernel object such as struct cdev.
+It allows the driver to access device-specific data and state associated with the opened device.
+It provides a way to recover the enclosing structure when only a pointer to one of its members is available.
+
+
+3. What happens if two devices share the same buffer[]?
+
+Both devices operate on the same memory region.
+Data written by one device can overwrite data written by the other.
+Reads from one device may return data belonging to another device.
+Device behavior becomes coupled and data isolation is lost.
+Synchronization issues and race conditions may occur.
+
+
+4. How does private_data help isolate devices?
+
+private_data stores device-specific information for an open file instance.
+It allows each file descriptor to be associated with the correct device object.
+Driver operations can access the appropriate device state through private_data.
+This enables independent buffers, counters, and configuration for different devices.
+
+
+5.What is MKDEV() and why is it needed?
+
+MKDEV() creates a device number (dev_t) from a major number and a minor number.
+Many kernel APIs require a dev_t rather than separate major and minor values.
+It provides a standard representation of a device identifier used throughout the kernel.
+The resulting dev_t can later be decoded using the MAJOR() and MINOR() macros.
