@@ -1,0 +1,56 @@
+1. What does ioctl() allow that read() and write() do not?
+Ans:
+ioctl() provides a mechanism for device-specific control operations that do not fit the simple data-transfer model of read() and write().
+It allows configuration, status queries, mode changes, resets, enabling/disabling features, and other custom commands.
+It supports passing structured data between user space and kernel space.
+It gives drivers a flexible command interface beyond sequential data transfer.
+
+
+
+2. Why do we need copy_to_user() or copy_from_user()?
+Ans:
+User-space memory and kernel-space memory are separated for protection and security.
+The kernel cannot safely dereference a user-space pointer directly.
+copy_from_user() safely copies data from user space to kernel space.
+copy_to_user() safely copies data from kernel space to user space.
+These functions validate memory access and handle faults that may occur when accessing user-provided addresses.
+
+
+3. What does _IO vs _IOR mean?
+ANs:
+These macros define the direction of data transfer for an ioctl command.
+
+_IO
+No data transfer.
+Command only.
+Example: reset device.
+_IOR
+Read data from the kernel/driver to user space.
+User receives information from the driver.
+
+Other related macros:
+
+_IOW → User writes data to the driver.
+_IOWR → Data is transferred in both directions.
+
+
+4. What happens if the user passes an invalid cmd?
+
+The driver should recognize that the command is unsupported.
+It typically returns:
+-ENOTTY
+
+("Inappropriate ioctl for device")
+
+The requested operation is not performed.
+User space receives an error indication from the ioctl() call.
+
+
+
+5. Why is thread-safety still important in ioctl()?
+
+Multiple processes or threads may call ioctl() simultaneously on the same device.
+Many ioctl commands modify shared device state, configuration, buffers, counters, or hardware registers.
+Concurrent access can cause race conditions, inconsistent state, corrupted data, or unexpected device behavior.
+Proper synchronization (mutexes, spinlocks, semaphores, etc.) may be required to protect shared resources.
+The fact that an operation is performed through ioctl() does not automatically make it atomic or thread-safe.
