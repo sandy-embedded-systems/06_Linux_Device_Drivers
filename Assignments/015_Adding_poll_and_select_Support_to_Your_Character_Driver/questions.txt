@@ -1,0 +1,43 @@
+1. What is the purpose of poll_wait() in the driver?
+poll_wait() registers the calling process with a wait queue associated with the device.
+It tells the kernel where the process should sleep if the requested event is not currently available.
+It enables the process to be awakened when the device state changes (for example, when new data arrives).
+It does not put the process to sleep by itself; it only sets up the association between the process and the wait queue.
+
+
+2. What does the poll() system call do in user space?
+poll() allows an application to monitor one or more file descriptors simultaneously.
+It checks whether I/O operations can be performed without blocking.
+The application can specify which events it is interested in (readable, writable, error conditions, etc.).
+poll() either returns immediately if an event is ready or waits until an event occurs or a timeout expires.
+
+
+
+3.What happens if your driver's .poll returns 0?
+Returning 0 means that no requested events are currently available.
+User-space poll() will continue waiting (unless the timeout expires).
+The file descriptor will not be reported as ready for reading or writing.
+The application will not attempt the corresponding I/O operation until a future poll indicates readiness.
+
+
+4.How does poll() differ from blocking read()?
+
+Blocking read()
+
+Attempts to read data immediately.
+If data is unavailable, the process sleeps inside the read operation.
+The process is waiting for one specific operation to complete.
+
+poll()
+
+Does not transfer data.
+Only checks whether an operation would succeed without blocking.
+Can monitor multiple file descriptors at the same time.
+Allows applications to implement event-driven I/O.
+
+
+5.Why is POLLIN used in the return mask?
+POLLIN indicates that data is available for reading.
+When the driver returns POLLIN, it informs user space that a subsequent read() can proceed without blocking.
+User-space applications use this flag to determine that the file descriptor is ready for input operations.
+It is the standard readiness notification for readable data.
