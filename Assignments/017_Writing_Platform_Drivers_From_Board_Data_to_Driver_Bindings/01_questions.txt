@@ -1,0 +1,27 @@
+1. What triggers the call to probe() in a platform driver?
+
+The probe() function is called when the kernel finds a successful match between a registered platform driver and a platform device. This matching typically occurs based on the device name or the driver's of_match_table for Device Tree systems. The platform bus performs the matching automatically. If a matching device already exists when the driver is registered, probe() is invoked immediately. Similarly, if the driver is already registered and a matching device appears later, probe() is called then. The kernel passes a pointer to the matched platform_device to the driver. Inside probe(), the driver initializes hardware resources and registers any required interfaces. If initialization succeeds, the device becomes operational. Thus, successful device-driver matching is what triggers probe().
+
+
+
+2. Can you have multiple platform devices with the same name?
+
+Yes, multiple platform devices can have the same name. This is common when several instances of identical hardware exist in a system. The platform framework distinguishes them using the device ID field rather than the name alone. A driver registered with that name can manage all matching device instances. For each matching device, the kernel invokes the driver's probe() separately. Each device gets its own platform_device structure and resources. This allows one driver to support multiple identical devices. The devices remain independent even though they share the same name. Therefore, duplicate names are allowed and frequently used in practice.
+
+
+
+3. What does platform_driver_unregister() do?
+
+platform_driver_unregister() removes a previously registered platform driver from the platform bus. The driver is no longer available for matching with platform devices. Before removal, the kernel invokes the driver's remove() callback for every device currently bound to it. This gives the driver a chance to free resources and perform cleanup. Any device-driver associations are broken during this process. After unregistration, newly added platform devices will not match that driver. The driver's entry is removed from the platform bus driver list. It is typically called from the module exit function. This function effectively reverses the actions of platform_driver_register().
+
+
+
+4. What is the significance of .id = -1 in a platform device?
+
+Setting .id = -1 indicates that the platform device does not require an instance number. The kernel treats the device as a single unnamed instance rather than appending a numeric suffix. For example, a device named "mydev" with .id = -1 appears as "mydev" instead of "mydev.0". This is commonly used when only one instance of the device exists in the system. It simplifies naming and avoids unnecessary numbering. If multiple instances are needed, non-negative IDs such as 0, 1, and 2 are typically assigned. The ID helps distinguish identical devices sharing the same name. Thus, -1 means "no instance number."
+
+
+
+5. Where is pdev->name compared during matching?
+
+The comparison of pdev->name occurs inside the platform bus matching logic. Specifically, the platform bus calls its match function when either a device or driver is registered. This function compares the platform device's name (pdev->name) with the driver's name (driver->driver.name). If the names match, the kernel considers the device and driver compatible. A successful match results in the driver's probe() function being called. In Device Tree systems, matching may also involve the driver's of_match_table before name comparison. The comparison is handled internally by the platform bus and is not performed directly by the driver. This mechanism allows automatic binding of devices and drivers. It is the fundamental matching step in the platform driver framework.
