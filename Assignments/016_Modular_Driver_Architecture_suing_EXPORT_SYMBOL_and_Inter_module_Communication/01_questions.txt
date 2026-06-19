@@ -1,0 +1,27 @@
+1. What is EXPORT_SYMBOL() used for?
+
+EXPORT_SYMBOL() is used in the Linux kernel to make a function or global variable available to other loadable kernel modules. Normally, symbols defined inside a module are private to that module. When a symbol is exported, the kernel adds it to its global symbol table so other modules can reference it during loading. This enables code sharing between modules without duplicating functionality. A common example is a core module exporting APIs that helper or device-specific modules use. The exporting module acts like a library, while the importing module acts like a client. The kernel linker resolves these references when the dependent module is loaded. Without exporting, external modules cannot access the symbol. It is a key mechanism for modular kernel design.
+
+
+
+2. Why does loading order matter?
+
+Loading order matters because a module may depend on symbols provided by another module. When a module is loaded, the kernel attempts to resolve all external symbol references immediately. If the required symbols are not yet present in the kernel symbol table, loading fails. Therefore, the provider module must be loaded before the consumer module. For example, if device_driver.ko uses functions exported by core_driver.ko, then core_driver.ko must be loaded first. Once the provider is loaded, its exported symbols become available. The dependent module can then successfully link against them. Incorrect loading order results in unresolved symbol errors. Dependency management tools such as modprobe often handle this automatically.
+
+
+
+3. What happens if a module uses a symbol before it's exported?
+
+If a module references a symbol that is not exported, the kernel loader cannot resolve that reference. During module insertion, the kernel checks all external symbols used by the module. If the symbol is missing from the kernel's symbol table, module loading fails. The insmod command typically reports an "Unknown symbol" error. The module is not loaded into memory and its initialization function is never executed. This prevents invalid function calls and potential kernel crashes. The kernel enforces this check to maintain integrity and correctness. The missing symbol may be due to a missing EXPORT_SYMBOL(), an unloaded provider module, or a version mismatch. The issue must be fixed before the module can be loaded successfully.
+
+
+
+4. How is device_driver.ko logically dependent on core_driver.ko?
+
+device_driver.ko is logically dependent on core_driver.ko when it uses functions, variables, or services provided by the core module. The core module usually implements generic functionality, while the device module focuses on device-specific behavior. Instead of duplicating code, the device module calls APIs exported by the core module. This creates a dependency relationship between them. The core module must be loaded first so its exported symbols are available. If the core module is removed, the dependent module can no longer function correctly. The kernel tracks such dependencies to prevent unsafe unloading. This design promotes code reuse and modularity. It is similar to an application depending on a shared library.
+
+
+
+5. Can you export data structures too?
+
+Yes, data structures can be exported, but the export actually applies to a global variable that contains or points to the structure. EXPORT_SYMBOL() cannot directly export a structure type definition because type definitions exist only at compile time. However, a module can define a global structure instance and export that variable. Other modules can then access the structure through an extern declaration. Function pointers inside exported structures are commonly used to create interfaces between modules. Care must be taken to ensure synchronization and compatibility when sharing data structures. Changes to the structure layout may break dependent modules. Therefore, exported structures are often treated as stable APIs. Exporting functions is generally preferred when possible because it provides better encapsulation.
