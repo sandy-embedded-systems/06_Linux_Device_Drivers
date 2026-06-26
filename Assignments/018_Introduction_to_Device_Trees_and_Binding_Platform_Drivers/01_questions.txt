@@ -1,0 +1,27 @@
+1. What is the role of the compatible string?
+
+The compatible string identifies the hardware device described in the Device Tree. It acts as a link between a DT node and a Linux driver. During boot, the kernel compares the node's compatible value with the driver's of_match_table. If a match is found, the corresponding driver is selected for that device. It also allows different hardware revisions to be supported by the same driver. Thus, it is the primary mechanism for DT-based driver binding.
+
+
+
+2. What happens if status = "disabled" in the Device Tree?
+
+When a DT node contains status = "disabled", the kernel treats that device as unavailable. The node is ignored during device enumeration, and no platform device is created for it. Since no device object exists, the matching driver's probe() function is never called. This is commonly used to disable unused peripherals without modifying driver code. Changing the status to "okay" enables the device.
+
+
+
+3. How does the kernel associate the DT node to a platform device?
+
+During boot, the kernel parses the Device Tree and examines each enabled node. For supported bus types, it creates a corresponding platform device structure from the DT information. The DT node is attached to the platform device through its device structure (dev.of_node). Later, platform drivers are matched against the node's compatible string. If a match occurs, the driver's probe() function is invoked for that platform device.
+
+
+
+4. Can one driver match multiple compatible strings?
+
+Yes, a single driver can support multiple compatible strings. The driver provides an of_device_id table containing all supported compatible values. During matching, the kernel checks whether the DT node's compatible string appears in this table. This allows one driver to handle different hardware versions or related devices. The driver may also use match-specific data to customize behavior for each device type.
+
+
+
+5. What does of_property_read_u32() do?
+
+of_property_read_u32() is a Device Tree helper function used to read a 32-bit unsigned integer property from a DT node. The driver passes the node pointer, property name, and a variable to store the value. If the property exists and is valid, the function copies the value and returns 0. On failure, it returns a negative error code. It is commonly used to obtain configuration parameters such as IDs, GPIO numbers, clock rates, or buffer sizes from the Device Tree.
